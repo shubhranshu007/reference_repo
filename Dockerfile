@@ -1,20 +1,14 @@
-# Use official Node.js LTS base image
-FROM node:20-alpine
+# Use official OpenJDK runtime as base image
+FROM openjdk:17-jdk-slim
 
 # Set working directory inside container
 WORKDIR /app
 
-# Copy package.json and package-lock.json first (for caching)
-COPY package*.json ./
+# Copy the JAR file into the container
+COPY target/*.jar app.jar
 
-# Install dependencies (only production deps)
-RUN npm install --production
+# Expose the application port (adjust if needed)
+EXPOSE 8080
 
-# Copy the rest of the source code
-COPY . .
-
-# Expose the app port (change if your app uses a different one)
-EXPOSE 3000
-
-# Start the Node.js app
-CMD ["npm", "start"]
+# Run the JAR file
+ENTRYPOINT ["java", "-jar", "app.jar"]
